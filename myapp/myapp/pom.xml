@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Root element of the Maven POM file -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Defines the model version of the POM -->
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Parent POM, inheriting properties and dependencies from Spring Boot starter parent -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.2</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<!-- Unique identifier for the project -->
+	<groupId>com.example</groupId>
+	<artifactId>myapp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<!-- Project metadata -->
+	<name>myapp</name>
+	<description>Demo project for Spring Boot</description>
+
+	<!-- URL for the project (currently empty) -->
+	<url/>
+
+	<!-- License information (currently empty, should be defined if distributing the project) -->
+	<licenses>
+		<license/>
+	</licenses>
+
+	<!-- Developer information (currently empty) -->
+	<developers>
+		<developer/>
+	</developers>
+
+	<!-- Source Control Management (SCM) settings, currently empty -->
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+
+	<!-- Project-wide properties -->
+	<properties>
+		<java.version>21</java.version> <!-- Defines Java version compatibility -->
+	</properties>
+
+	<!-- Dependencies section -->
+	<dependencies>
+		<!-- Spring Boot starter for building web applications -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Spring Boot starter for writing and running tests -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope> <!-- Only included in the test scope -->
+		</dependency>
+
+		<!-- Developer tools for hot reloading and runtime enhancements -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope> <!-- Excluded from production builds -->
+		</dependency>
+
+		<!-- Spring Boot starter for actuator (monitoring and metrics) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		<!-- Spring Boot starter for integrating Spring Data JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- MySQL database driver for connecting to a MySQL database -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope> <!-- Included only at runtime -->
+		</dependency>
+	</dependencies>
+
+	<!-- Build configuration -->
+	<build>
+		<plugins>
+			<!-- Maven plugin for Spring Boot, required for running and packaging the application -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
