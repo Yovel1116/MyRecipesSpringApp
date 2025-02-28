@@ -2,7 +2,7 @@
 FROM eclipse-temurin:21-jdk
 
 # Set working directory inside container
-WORKDIR /app
+WORKDIR /myapp
 
 # Copy Maven wrapper and config (adjust path)
 COPY myapp/.mvn/ .mvn
