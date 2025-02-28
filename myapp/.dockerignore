@@ -1,0 +1,7 @@
+myapp/target/
+.mvn/
+*.log
+*.iml
+.idea/
+.vscode/
+node_modules/
