@@ -9,9 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class AIService {
     private final WebClient webClient;
-
-    @Value(("${gemini.api.key}"))
-    private String apiKey;
+    private final String apiKey = System.getenv("GEMINI_API_KEY");
 
     public AIService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://generativelanguage.googleapis.com").build();
