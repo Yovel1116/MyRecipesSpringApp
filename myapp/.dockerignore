@@ -1,4 +1,4 @@
-../myapp/target/
+target/
 .mvn/
 *.log
 *.iml
