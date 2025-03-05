@@ -218,7 +218,28 @@ document.getElementById("deleteForm").addEventListener("submit", function(event)
     })
     .catch(error => console.error("Error deleting recipe:", error));
 });
+function askAI() {
+    // Get the prompt from the modal's input field
+    var prompt = document.getElementById("modalPrompt").value;
 
+    fetch('/api/ai/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prompt)
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data); // Show the response in an alert
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred. Please try again.");
+    });
+
+    // Close the modal after sending the request
+    var modal = bootstrap.Modal.getInstance(document.getElementById('aiModal'));
+    modal.hide();
+}
 // Fetch recipes on page load
 fetchRecipes();
 
