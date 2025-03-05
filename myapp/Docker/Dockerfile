@@ -5,13 +5,13 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /myapp
 
 # Copy Maven wrapper and config (adjust path)
-COPY myapp/.mvn/ .mvn
-COPY myapp/mvnw myapp/pom.xml ./
+COPY ../myapp/.mvn .mvn
+COPY ../myapp/mvnw myapp/pom.xml ./
 RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 
 # Copy the actual source code
-COPY myapp/src ./src
+COPY ../myapp/src ./src
 
 # Build the application
 RUN ./mvnw clean package -DskipTests
