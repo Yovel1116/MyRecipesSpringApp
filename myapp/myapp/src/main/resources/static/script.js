@@ -148,7 +148,7 @@
 
     const recipeName = document.getElementById("recipeName").value.trim();
     const prepTime = document.getElementById("prepTime").value.trim();
-    const selectedCuisines = document.getElementById("cuisine").value.trim();
+    const cuisine = document.getElementById("cuisine").value.trim();
 
     // ✅ If ingredients or instructions are empty, set a default value
     const ingredients = document.getElementById("ingredients").value.trim() || "No ingredients provided.";
@@ -159,7 +159,7 @@
     prep_time: prepTime,
     ingredients: ingredients, // Optional
     instructions: instructions, // Optional
-    cuisine: selectedCuisines
+    cuisine: cuisine
 };
 
     console.log("🚀 Sending Data:", JSON.stringify(newRecipe)); // Debugging
@@ -202,7 +202,7 @@
     prep_time: document.getElementById("updatePrepTime").value.trim() || undefined,
     ingredients: document.getElementById("updateIngredients").value.trim() || undefined,
     instructions: document.getElementById("updateInstructions").value.trim() || undefined,
-    selectedCuisines: document.getElementById("cuisine").value.trim()  || undefined;
+    cuisine: document.getElementById("cuisine").value.trim()  || undefined;
 
     };
 
