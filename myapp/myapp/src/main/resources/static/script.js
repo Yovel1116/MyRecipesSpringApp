@@ -1,6 +1,4 @@
 
-
-
     const API_URL = window.location.hostname === "localhost"
     ? "http://localhost:8080/api/recipes"
     : "https://recipespring.up.railway.app/api/recipes";
@@ -204,14 +202,10 @@
     prep_time: document.getElementById("updatePrepTime").value.trim() || undefined,
     ingredients: document.getElementById("updateIngredients").value.trim() || undefined,
     instructions: document.getElementById("updateInstructions").value.trim() || undefined,
-};
+    selectedCuisines: document.getElementById("cuisine").value.trim()  || undefined;
 
-    // ✅ Collect selected cuisines if any were checked
-    const selectedUpdateCuisines = Array.from(document.querySelectorAll('input[name="updateCuisine"]:checked'))
-    .map(checkbox => checkbox.value)
-    .join(", ");
-    if (selectedUpdateCuisines) {
-    updatedRecipe.cuisine = selectedUpdateCuisines;
+    };
+
 }
 
     if (!recipeId) {
