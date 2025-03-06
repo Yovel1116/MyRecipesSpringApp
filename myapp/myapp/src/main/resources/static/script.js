@@ -41,7 +41,6 @@ function displayRecipes() {
 
         li.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine}`;
         recipeList.appendChild(li);
-        document.getElementById('addRecipe').classList.remove('d-none');
 
     });
 
