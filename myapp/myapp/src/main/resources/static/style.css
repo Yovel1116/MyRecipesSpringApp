@@ -1,7 +1,14 @@
 
-.modal-above-navbar {
-    z-index: 1070; /* Adjust this value if needed */
+
+
+#aiModal .modal-dialog {
+    z-index: 1080; /* Ensure it's above the backdrop */
 }
+
+#aiModal .modal-backdrop {
+    z-index: 1075; /* Slightly lower than the dialog */
+}
+
 
 .glow-on-hover {
     width: 100px;
