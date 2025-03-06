@@ -17,54 +17,69 @@
 <body class="bg-light">
 <div class="modal fade modal-above-navbar"  tabindex="-1" aria-labelledby="aiModalLabel" aria-hidden="true">
 
-</div>
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+</div><nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Recipes Management</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#" onclick="showSection('home')">Recipes Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <button type="button" class="btn me-2 shadow-sm glow-on-hover"  onclick="showSection()" data-bs-toggle="modal" data-bs-target="#aiModal" style="color: white">
+                            AI Assist
+                        </button>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="crudDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bars"></i> Manage Recipes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="crudDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="showSection('addRecipe')">➕ Add</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showSection('updateRecipe')">✏️ Update</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showSection('deleteRecipe')">🗑️ Delete</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSectionAbout('about')">About</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="aboutSection" class="d-none">
+                <div class=" mt-4 about-container">
+                    <h2 class="text-center mb-4">About Recipes Management</h2>
+                    <p>Discover & Manage Your Favorite Recipes. Anytime, Anywhere!  </p>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto d-flex flex-wrap align-items-center">
-                <li class="nav-item">
-                    <button type="button" class="btn me-2 shadow-sm glow-on-hover" data-bs-toggle="modal" data-bs-target="#aiModal" style="color: white">
-                        AI Assist
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-outline-success me-2" onclick="showSection('addRecipe')">➕ Add</button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-outline-warning me-2" onclick="showSection('updateRecipe')">✏️ Update</button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-outline-danger" onclick="showSection('deleteRecipe')">🗑️ Delete</button>
-                </li>
-            </ul>
-        </div>
+                    <p><i class="fas fa-user"></i> Developed by: Yovel Katz</p>
+                    <p><i class="fas fa-envelope"></i> Contact: yovel1116@gmail.com</p>
+                    <p><i class="fab fa-github"></i> For repository on GitHub: <a href="https://github.com/Yovel1116/MyRecipesSpringApp" target="_blank">MyRecipesSpringApp</a></p>
 
-        <div class="modal fade" id="aiModal" tabindex="-1" aria-labelledby="aiModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="aiModalLabel">AI Assist</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" id="modalPrompt" class="form-control" placeholder="Enter your request...">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="askAI()">Send</button>
+                    <button onclick="hideAboutSection()" class="btn btn-primary">Close</button>
+                </div>
+            </div>
+            <div class="modal fade" id="aiModal" tabindex="-1" aria-labelledby="aiModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="aiModalLabel">AI Assist</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" id="modalPrompt" class="form-control" placeholder="Enter your request...">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="askAI()">Send</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
 </nav>
 

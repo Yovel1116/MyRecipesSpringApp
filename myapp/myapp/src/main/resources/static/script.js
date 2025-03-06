@@ -240,6 +240,80 @@ function askAI() {
     var modal = bootstrap.Modal.getInstance(document.getElementById('aiModal'));
     modal.hide();
 }
+
+// Get all the CRUD buttons within the offcanvas menu
+const crudButtons = document.querySelectorAll('#offcanvasNavbar button[onclick^="showSection"]');
+
+// Add a click event listener to each CRUD button
+crudButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Get the offcanvas instance
+        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
+        // Hide the offcanvas menu
+        offcanvas.hide();
+    });
+});
+// Get only the CRUD links, excluding "About" and "Ask AI"
+const crudLinks = document.querySelectorAll('#offcanvasNavbar a[onclick="showSection(\'addRecipe\')"], #offcanvasNavbar a[onclick="showSection(\'updateRecipe\')"], #offcanvasNavbar a[onclick="showSection(\'deleteRecipe\')"]');
+
+// Add a click event listener to each CRUD link
+crudLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        // Get the offcanvas instance
+        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
+        // Hide the offcanvas menu
+        offcanvas.hide();
+    });
+});
+
+function showSectionAbout(section) {
+    const aboutSection = document.getElementById('aboutSection');
+    if (section === 'about') {
+        // Only proceed if the section is not already shown
+        if (!aboutSection.classList.contains('show')) {
+            aboutSection.classList.remove('d-none');
+            // Use setTimeout to ensure the 'show' class is added after the 'd-none' class is removed
+            setTimeout(() => {
+                aboutSection.classList.add('show');
+            }, 50);
+        }
+    } else if (section === 'home') {
+        // Only proceed if the section is currently shown
+        if (aboutSection.classList.contains('show')) {
+            aboutSection.classList.remove('show');
+            // Use a transitionend event listener to add 'd-none' after the transition
+            aboutSection.addEventListener('transitionend', () => {
+                aboutSection.classList.add('d-none');
+            }, { once: true });
+        }
+    } else {
+        // For other sections, hide the about section if it's visible
+        if (aboutSection.classList.contains('show')) {
+            aboutSection.classList.remove('show');
+            // Use a transitionend event listener to add 'd-none' after the transition
+            aboutSection.addEventListener('transitionend', () => {
+                aboutSection.classList.add('d-none');
+            }, { once: true });
+        }
+        // ... your existing code to handle other sections ...
+    }
+}
+
+function hideAboutSection() {
+    const aboutSection = document.getElementById('aboutSection');
+
+    // Only proceed if the section is currently shown
+    if (aboutSection.classList.contains('show')) {
+        aboutSection.classList.remove('show');
+
+        // Use a transitionend event listener to add 'd-none' after the transition
+        aboutSection.addEventListener('transitionend', () => {
+            aboutSection.classList.add('d-none');
+        }, { once: true });
+    }
+}
+
+
 // Fetch recipes on page load
 fetchRecipes();
 
