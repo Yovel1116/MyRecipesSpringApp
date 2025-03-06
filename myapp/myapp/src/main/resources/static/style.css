@@ -86,16 +86,27 @@
     visibility: hidden; /* Prevent it from taking up space */
     transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; /* Add transition for opacity and visibility */
 }
+
 .about-container {
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    max-width: 60%;
-    margin: 0 auto;
-    /* Remove max-height and overflow-y */
+     background-color: white;
+     padding: 30px;
+     border-radius: 12px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+     max-width: 90%; /* Adjust as needed */
+     width: auto; /* Allow the container to shrink on smaller screens */
+     margin: 0 auto;
+     box-sizing: border-box; /* Include padding and border in element's total width and height */
+ }
+
+.about-container p {
+    word-wrap: break-word; /* Allow long words to break */
+    overflow-wrap: break-word; /* Alternative to word-wrap */
 }
 
+.about-container h2 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
 #aboutSection.show {
     opacity: 1;
     visibility: visible;

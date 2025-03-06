@@ -41,6 +41,8 @@ function displayRecipes() {
 
         li.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine}`;
         recipeList.appendChild(li);
+        document.getElementById('addRecipe').classList.remove('d-none');
+
     });
 
     // Update pagination controls
@@ -263,8 +265,12 @@ crudLinks.forEach(link => {
         const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
         // Hide the offcanvas menu
         offcanvas.hide();
+
     });
+
 });
+
+
 
 function showSectionAbout(section) {
     const aboutSection = document.getElementById('aboutSection');
