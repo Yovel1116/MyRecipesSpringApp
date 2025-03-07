@@ -1,13 +1,9 @@
 
-
-
-#aiModal .modal-dialog {
-    z-index: 1080; /* Ensure it's above the backdrop */
+.modal-backdrop.show{
+    z-index: 0;
 }
 
-#aiModal .modal-backdrop {
-    z-index: 1075; /* Slightly lower than the dialog */
-}
+
 
 
 .glow-on-hover {
