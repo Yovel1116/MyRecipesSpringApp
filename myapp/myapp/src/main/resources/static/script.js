@@ -44,12 +44,27 @@ function displayRecipes() {
 
     });
 
+    let allRecipesJSON = []; // מערך לשמירת המתכונים בפורמט JSON
+
+        fetch(`${API_URL}`) // החלף בכתובת ה-ENDPOINT שלך
+            .then(response => response.json())
+            .then(recipes => {
+                allRecipesJSON = recipes; // מילוי המערך עם המתכונים מה-ENDPOINT
+                // כאן אפשר להוסיף קוד לעדכון התצוגה, אם צריך
+            })
+            .catch(error => {
+                console.error('Error loading recipes:', error);
+                alert("An error occurred while loading recipes.");
+            });
+
+
     // Update pagination controls
     updatePaginationControls();
 
     // Initialize Bootstrap tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
 }
 
 function updatePaginationControls() {
@@ -219,25 +234,55 @@ document.getElementById("deleteForm").addEventListener("submit", function(event)
     })
     .catch(error => console.error("Error deleting recipe:", error));
 });
+let conversationHistory = []; // מערך לשמירת היסטוריית השיחה
+
 function askAI() {
     // Get the prompt from the modal's input field
     var prompt = document.getElementById("modalPrompt").value;
 
+    // Adding a small string to the prompt
+    prompt = prompt + " " +
+        "First, try to understand the intent and context of my current prompt. " +
+        "If the prompt is a general question or statement, answer it directly without referring to the list of recipes. " +
+        "Only refer to the list of recipes if the question is specifically asking about a recipe or related to food. and return the ID of the recipes you returned, and their name " +
+        "Return only the most relevant recipe when explicitly asked about recipes. " +
+        "Avoid returning recipes that have already been mentioned. " +
+        "Give a short and focused answer. " +
+        "If a recipe is not mentioned in this question, do not repeat it, just answer the question.";
+
+    if (conversationHistory.length > 0) {
+        prompt += " Previous conversation: " + JSON.stringify(conversationHistory);
+    }
+
     fetch('/api/ai/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(prompt)
+        body: JSON.stringify({
+            prompt: prompt,
+            recipes: allRecipes, // Sending the recipes array
+            temperature:0.5
+        })
     })
-    .then(response => response.text())
-    .then(data => {
-        alert(data); // Show the response in an alert
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("An error occurred. Please try again.");
-    });
+        .then(response => response.text())
+        .then(data => {
+            alert(data); // Show the response in an alert
+
+            // שמירת השאלה והתשובה בהיסטוריית השיחה
+            conversationHistory.push({ question: prompt, answer: data });
+
+            if (conversationHistory.length > 5) {
+                conversationHistory.shift();
+            }
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred. Please try again.");
+        });
 
     // Close the modal after sending the request
+    document.getElementById("modalPrompt").value = "";
+
     var modal = bootstrap.Modal.getInstance(document.getElementById('aiModal'));
     modal.hide();
 }
