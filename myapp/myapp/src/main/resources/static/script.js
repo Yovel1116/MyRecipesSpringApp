@@ -232,20 +232,21 @@ function filterRecipes() {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 }
-
-// הוספת אייקון רענון
-const clearButton = document.createElement("button");
-clearButton.innerHTML = "&#x21bb;"; // אייקון רענון
-clearButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "ms-2"); // עיצוב כפתור
-clearButton.addEventListener("click", () => {
-    document.getElementById("searchRecipe").value = "";
-    filterRecipes();
-});
+const clearButton = document.getElementById("clearSearchButton");
 
 function clearSearch() {
     document.getElementById("searchRecipe").value = "";
     filterRecipes();
 }
+
+// הוספת מאזין לאירוע קליק
+clearButton.addEventListener("click", clearSearch);
+
+// טיפול באירועי מגע (למובייל)
+clearButton.addEventListener("touchstart", (event) => {
+    event.preventDefault();
+    clearSearch();
+});
 
 // הוספת מאזין לאירוע click לכפתור הרענון
 document.getElementById("clearSearchButton").addEventListener("click", clearSearch);
@@ -293,7 +294,6 @@ function askAI() {
                 return; // עצירת המשך ביצוע הפונקציה
             }
 
-            // חילוץ שם המתכון (רק אם לא התקבלה שגיאה)
             const recipeNameMatch = data.match(/Recipe: (.*)/i);
             let recipeName = recipeNameMatch ? recipeNameMatch[1] : null;
 
