@@ -6,8 +6,116 @@ let currentPage = 1;
 const recipesPerPage = 9;
 let totalRecipes = 0;
 let allRecipes = [];
+let conversationHistory = [];
 
-// Fetch and display recipes
+document.getElementById("recipeForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const recipeName = document.getElementById("recipeName").value.trim();
+    const prepTime = document.getElementById("prepTime").value.trim();
+    const cuisine = document.getElementById("cuisine").value.trim();
+    const ingredients = document.getElementById("ingredients").value.trim() || "No ingredients provided.";
+    const instructions = document.getElementById("instructions").value.trim() || "No instructions available.";
+
+    const newRecipe = { name: recipeName, prep_time: prepTime, ingredients, instructions, cuisine };
+
+    console.log("🚀 Sending Data:", JSON.stringify(newRecipe));
+
+    fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newRecipe)
+    })
+    .then(response => {
+        if (!response.ok) return response.json().then(err => { throw new Error(err.message || "Failed to add recipe"); });
+        return response.json();
+    })
+    .then(() => {
+        fetchRecipes();
+        document.getElementById("recipeForm").reset();
+        alert("Recipe added successfully!");
+    })
+    .catch(error => {
+        console.error("❌ Error adding recipe:", error);
+        alert("Error adding recipe. Check the console for details.");
+    });
+});
+document.getElementById("updateForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const recipeId = document.getElementById("updateId").value.trim();
+    if (!recipeId) {
+        alert("Please enter a valid Recipe ID.");
+        return;
+    }
+
+    const updatedRecipe = {
+        name: document.getElementById("updateName").value.trim() || undefined,
+        prep_time: document.getElementById("updatePrepTime").value.trim() || undefined,
+        ingredients: document.getElementById("updateIngredients").value.trim() || undefined,
+        instructions: document.getElementById("updateInstructions").value.trim() || undefined,
+        cuisine: document.getElementById("updateCuisine").value.trim() || undefined
+    };
+
+    console.log("🚀 Update Data:", JSON.stringify(updatedRecipe));
+
+    fetch(`${API_URL}/${recipeId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedRecipe)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+    })
+    .then(() => {
+        fetchRecipes();
+        document.getElementById("updateForm").reset();
+        alert("Recipe updated successfully!");
+    })
+    .catch(error => console.error("Error updating recipe:", error));
+});
+document.getElementById("deleteForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const recipeId = document.getElementById("deleteId").value.trim();
+    if (!recipeId) {
+        alert("Please enter a valid Recipe ID.");
+        return;
+    }
+
+    console.log("🚀 Delete Data:", JSON.stringify(recipeId));
+
+    fetch(`${API_URL}/${recipeId}`, { method: "DELETE" })
+    .then(() => {
+        fetchRecipes();
+        document.getElementById("deleteForm").reset();
+        alert("Recipe deleted successfully!");
+    })
+    .catch(error => console.error("Error deleting recipe:", error));
+});
+const crudButtons = document.querySelectorAll('#offcanvasNavbar button[onclick^="showSection"]');
+crudButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Get the offcanvas instance
+        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
+        // Hide the offcanvas menu
+        offcanvas.hide();
+    });
+});
+const crudLinks = document.querySelectorAll('#offcanvasNavbar a[onclick="showSection(\'addRecipe\')"], #offcanvasNavbar a[onclick="showSection(\'updateRecipe\')"], #offcanvasNavbar a[onclick="showSection(\'deleteRecipe\')"]');
+crudLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        // Get the offcanvas instance
+        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
+        // Hide the offcanvas menu
+        offcanvas.hide();
+
+    });
+
+});
+
+
 function fetchRecipes() {
     fetch(API_URL)
         .then(response => response.json())
@@ -18,7 +126,6 @@ function fetchRecipes() {
         })
         .catch(error => console.error("Error fetching recipes:", error));
 }
-
 function displayRecipes() {
     const recipeList = document.getElementById("recipeList");
     recipeList.innerHTML = "";
@@ -41,22 +148,7 @@ function displayRecipes() {
 
         li.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine}`;
         recipeList.appendChild(li);
-
     });
-
-    let allRecipesJSON = []; // מערך לשמירת המתכונים בפורמט JSON
-
-        fetch(`${API_URL}`) // החלף בכתובת ה-ENDPOINT שלך
-            .then(response => response.json())
-            .then(recipes => {
-                allRecipesJSON = recipes; // מילוי המערך עם המתכונים מה-ENDPOINT
-                // כאן אפשר להוסיף קוד לעדכון התצוגה, אם צריך
-            })
-            .catch(error => {
-                console.error('Error loading recipes:', error);
-                alert("An error occurred while loading recipes.");
-            });
-
 
     // Update pagination controls
     updatePaginationControls();
@@ -64,9 +156,7 @@ function displayRecipes() {
     // Initialize Bootstrap tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
 }
-
 function updatePaginationControls() {
     document.getElementById("pageInfo").textContent = `Page ${currentPage} of ${Math.ceil(totalRecipes / recipesPerPage)}`;
     document.getElementById("prevPage").disabled = currentPage === 1;
@@ -76,6 +166,13 @@ function updatePaginationControls() {
 function changePage(direction) {
     currentPage += direction;
     displayRecipes();
+}
+
+function showSection(sectionId) {
+    document.getElementById("addRecipe").classList.add("d-none");
+    document.getElementById("updateRecipe").classList.add("d-none");
+    document.getElementById("deleteRecipe").classList.add("d-none");
+    document.getElementById(sectionId).classList.remove("d-none");
 }
 
 function filterRecipes() {
@@ -136,185 +233,114 @@ function filterRecipes() {
     tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 }
 
-function showSection(sectionId) {
-    document.getElementById("addRecipe").classList.add("d-none");
-    document.getElementById("updateRecipe").classList.add("d-none");
-    document.getElementById("deleteRecipe").classList.add("d-none");
-    document.getElementById(sectionId).classList.remove("d-none");
+// הוספת אייקון רענון
+const clearButton = document.createElement("button");
+clearButton.innerHTML = "&#x21bb;"; // אייקון רענון
+clearButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "ms-2"); // עיצוב כפתור
+clearButton.addEventListener("click", () => {
+    document.getElementById("searchRecipe").value = "";
+    filterRecipes();
+});
+
+function clearSearch() {
+    document.getElementById("searchRecipe").value = "";
+    filterRecipes();
 }
 
-// Create a new recipe
-document.getElementById("recipeForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const recipeName = document.getElementById("recipeName").value.trim();
-    const prepTime = document.getElementById("prepTime").value.trim();
-    const cuisine = document.getElementById("cuisine").value.trim();
-    const ingredients = document.getElementById("ingredients").value.trim() || "No ingredients provided.";
-    const instructions = document.getElementById("instructions").value.trim() || "No instructions available.";
-
-    const newRecipe = { name: recipeName, prep_time: prepTime, ingredients, instructions, cuisine };
-
-    console.log("🚀 Sending Data:", JSON.stringify(newRecipe));
-
-    fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newRecipe)
-    })
-    .then(response => {
-        if (!response.ok) return response.json().then(err => { throw new Error(err.message || "Failed to add recipe"); });
-        return response.json();
-    })
-    .then(() => {
-        fetchRecipes();
-        document.getElementById("recipeForm").reset();
-        alert("Recipe added successfully!");
-    })
-    .catch(error => {
-        console.error("❌ Error adding recipe:", error);
-        alert("Error adding recipe. Check the console for details.");
-    });
-});
-
-// Update an existing recipe
-document.getElementById("updateForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const recipeId = document.getElementById("updateId").value.trim();
-    if (!recipeId) {
-        alert("Please enter a valid Recipe ID.");
-        return;
-    }
-
-    const updatedRecipe = {
-        name: document.getElementById("updateName").value.trim() || undefined,
-        prep_time: document.getElementById("updatePrepTime").value.trim() || undefined,
-        ingredients: document.getElementById("updateIngredients").value.trim() || undefined,
-        instructions: document.getElementById("updateInstructions").value.trim() || undefined,
-        cuisine: document.getElementById("updateCuisine").value.trim() || undefined
-    };
-
-    console.log("🚀 Update Data:", JSON.stringify(updatedRecipe));
-
-    fetch(`${API_URL}/${recipeId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedRecipe)
-    })
-    .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        return response.json();
-    })
-    .then(() => {
-        fetchRecipes();
-        document.getElementById("updateForm").reset();
-        alert("Recipe updated successfully!");
-    })
-    .catch(error => console.error("Error updating recipe:", error));
-});
-
-// Delete a recipe
-document.getElementById("deleteForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const recipeId = document.getElementById("deleteId").value.trim();
-    if (!recipeId) {
-        alert("Please enter a valid Recipe ID.");
-        return;
-    }
-
-    console.log("🚀 Delete Data:", JSON.stringify(recipeId));
-
-    fetch(`${API_URL}/${recipeId}`, { method: "DELETE" })
-    .then(() => {
-        fetchRecipes();
-        document.getElementById("deleteForm").reset();
-        alert("Recipe deleted successfully!");
-    })
-    .catch(error => console.error("Error deleting recipe:", error));
-});
-let conversationHistory = []; // מערך לשמירת היסטוריית השיחה
+// הוספת מאזין לאירוע click לכפתור הרענון
+document.getElementById("clearSearchButton").addEventListener("click", clearSearch);
 
 function askAI() {
-    // Get the prompt from the modal's input field
-    var prompt = document.getElementById("modalPrompt").value;
+    const modalPrompt = document.getElementById("modalPrompt");
+    let prompt = modalPrompt.value;
 
-    // Adding a small string to the prompt
-    prompt = prompt + " " +
-        "First, try to understand the intent and context of my current prompt. " +
-        "If the prompt is a general question or statement, answer it directly without referring to the list of recipes. " +
-        "Only refer to the list of recipes if the question is specifically asking about a recipe or related to food. and return the ID of the recipes you returned, and their name " +
-        "Return only the most relevant recipe when explicitly asked about recipes. " +
-        "Avoid returning recipes that have already been mentioned. " +
-        "Give a short and focused answer. " +
-        "If a recipe is not mentioned in this question, do not repeat it, just answer the question.";
+    prompt += ' First, try to understand the intent and context of my current prompt. ' +
+        'If the prompt is a general question or statement, answer it directly without referring ' +
+        'to the list of recipes. Only refer to the list of recipes if the question is specifically ' +
+        'asking about a recipe or related to food. and return the ID of the recipes you returned, ' +
+        'and their name. Return only the most relevant recipe when explicitly asked about recipes. ' +
+        'Avoid returning recipes that have already been mentioned. Give a short and focused answer. ' +
+        'Give the answer only in ENGLISH! If a recipe is not mentioned in this question, do not repeat it, just answer the question. ' +
+        'When returning a recipe, please return only one and use the following format without any asterisks: ' +
+        'Recipe: recipe name ID:recipe ID For example: Recipe: Chicken Teriyaki ID: 123';
 
     if (conversationHistory.length > 0) {
         prompt += " Previous conversation: " + JSON.stringify(conversationHistory);
     }
+
+    const aiResponseInModal = document.getElementById("aiResponseInModal");
+    aiResponseInModal.innerHTML = "Loading..."; // הצגת הודעת טעינה
 
     fetch('/api/ai/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             prompt: prompt,
-            recipes: allRecipes, // Sending the recipes array
-            temperature:0.5
+            recipes: allRecipes,
+            totalRecipes:totalRecipes,
+            temperature: 0.5
         })
     })
         .then(response => response.text())
         .then(data => {
-            alert(data); // Show the response in an alert
+            const aiResponseInModal = document.getElementById("aiResponseInModal");
+            let responseText = "";
 
-            // שמירת השאלה והתשובה בהיסטוריית השיחה
+            // בדיקה אם התקבלה שגיאה מה-API
+            if (data.startsWith("Error:")) {
+                // הצגת הודעת שגיאה
+                aiResponseInModal.innerHTML = data;
+                return; // עצירת המשך ביצוע הפונקציה
+            }
+
+            // חילוץ שם המתכון (רק אם לא התקבלה שגיאה)
+            const recipeNameMatch = data.match(/Recipe: (.*)/i);
+            let recipeName = recipeNameMatch ? recipeNameMatch[1] : null;
+
+            if (recipeName) {
+                if (recipeName.endsWith('.')) {
+                    recipeName = recipeName.slice(0, -1);
+                }
+                responseText = data.replace(/Recipe: (.*)/i, `Recipe: <a href="#" onclick="searchRecipeByName('${recipeName}'); closeAIModal();  closeCrudSection();">${recipeName}</a>`);
+            } else {
+                responseText = data;
+            }
+            aiResponseInModal.innerHTML = responseText;
             conversationHistory.push({ question: prompt, answer: data });
-
             if (conversationHistory.length > 5) {
                 conversationHistory.shift();
             }
-
+            // ניקוי ה-input
+            modalPrompt.value = "";
         })
         .catch(error => {
             console.error('Error:', error);
-            alert("An error occurred. Please try again.");
+            aiResponseInModal.innerHTML = "An error occurred. Please try again.";
+
+            //סגירת המודל לאחר קבלת שגיאה
+            const modal = bootstrap.Modal.getInstance(document.getElementById('aiModal'));
+            modal.hide();
+
+            // ניקוי ה-input
+            modalPrompt.value = "";
         });
-
-    // Close the modal after sending the request
-    document.getElementById("modalPrompt").value = "";
-
-    var modal = bootstrap.Modal.getInstance(document.getElementById('aiModal'));
-    modal.hide();
 }
+function closeAIModal() {
+    const aiModal = document.getElementById("aiModal");
+    const modal = bootstrap.Modal.getInstance(aiModal);
+    modal.hide();
+    const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
+    offcanvas.hide();
+}
+function searchRecipeByName(recipeName) {
 
-// Get all the CRUD buttons within the offcanvas menu
-const crudButtons = document.querySelectorAll('#offcanvasNavbar button[onclick^="showSection"]');
-
-// Add a click event listener to each CRUD button
-crudButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        // Get the offcanvas instance
-        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
-        // Hide the offcanvas menu
-        offcanvas.hide();
-    });
-});
-// Get only the CRUD links, excluding "About" and "Ask AI"
-const crudLinks = document.querySelectorAll('#offcanvasNavbar a[onclick="showSection(\'addRecipe\')"], #offcanvasNavbar a[onclick="showSection(\'updateRecipe\')"], #offcanvasNavbar a[onclick="showSection(\'deleteRecipe\')"]');
-
-// Add a click event listener to each CRUD link
-crudLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        // Get the offcanvas instance
-        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasNavbar'));
-        // Hide the offcanvas menu
-        offcanvas.hide();
-
-    });
-
-});
-
-
+    // מציאת תיבת החיפוש
+    const searchInput = document.getElementById("searchRecipe");
+    // הכנסת שם המתכון לתיבת החיפוש
+    searchInput.value = recipeName;
+    // הפעלת פונקציית הסינון
+    filterRecipes();
+}
 
 function showSectionAbout(section) {
     const aboutSection = document.getElementById('aboutSection');
@@ -363,6 +389,18 @@ function hideAboutSection() {
     }
 }
 
+function closeCrudSection() {
+    if (window.innerWidth < 992) {
+        try {
+            document.getElementById("addRecipe").classList.add("d-none");
+            document.getElementById("updateRecipe").classList.add("d-none");
+            document.getElementById("deleteRecipe").classList.add("d-none");
+            document.getElementById("recipeListSection").classList.remove("d-none");
+        } catch (error) {
+            console.error("Error closing CRUD sections:", error);
+        }
+    }
+}
 
 // Fetch recipes on page load
 fetchRecipes();
