@@ -295,7 +295,7 @@ function filterRecipes() {
         let id = recipe.id || (recipe._links?.self?.href.split("/").pop() ?? "No ID");
 
         const li = document.createElement("li");
-        li.classList.add("list-group-item", "text-start", "recipe-item");
+        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "recipe-item"); // Added d-flex...
         li.setAttribute("data-bs-toggle", "tooltip");
         li.setAttribute("data-bs-html", "true");
         li.setAttribute("title",
@@ -303,7 +303,42 @@ function filterRecipes() {
              <strong>Instructions:</strong> ${recipe.instructions}`
         );
 
-        li.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine}`;
+        const recipeText = document.createElement('span');
+        recipeText.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine} `;
+        li.appendChild(recipeText);
+
+        const buttonContainer = document.createElement('div');
+
+        const updateButton = document.createElement('button');
+        updateButton.classList.add('btn', 'btn-sm', 'btn-outline-primary', 'update-recipe-btn');
+        updateButton.style.background = 'transparent';
+        updateButton.style.border = 'none';
+        updateButton.style.padding = '0';
+        updateButton.style.cursor = 'pointer';
+        updateButton.innerHTML = '✏️';
+        updateButton.setAttribute('data-recipe-id', id);
+        updateButton.addEventListener('click', () => {
+            showSection('updateRecipe');
+            populateUpdateForm(recipe);
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn', 'btn-sm', 'btn-outline-danger', 'delete-recipe-btn');
+        deleteButton.style.background = 'transparent';
+        deleteButton.style.border = 'none';
+        deleteButton.style.padding = '0';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.innerHTML = '🗑️';
+        deleteButton.setAttribute('data-recipe-id', id);
+        deleteButton.addEventListener('click', () => {
+            showSection('deleteRecipe');
+            document.getElementById('deleteId').value = id;
+        });
+
+        buttonContainer.appendChild(updateButton);
+        buttonContainer.appendChild(deleteButton);
+        li.appendChild(buttonContainer);
+
         recipeList.appendChild(li);
     });
 
