@@ -89,7 +89,6 @@
     visibility: hidden; /* Prevent it from taking up space */
     transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; /* Add transition for opacity and visibility */
 }
-
 .about-container {
      background-color: white;
      padding: 30px;
@@ -115,6 +114,27 @@
     visibility: visible;
     transition: opacity 0.3s ease-in-out, visibility 0s linear 0s; /* Adjust transition for visibility */
 }
+#contactSection {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+}
+
+#contactSection.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out, visibility 0s linear 0s; /* Adjust transition for visibility */
+}
 
 #clearSearchButton {
     background-color: transparent;
@@ -129,3 +149,45 @@
      text-overflow: ellipsis;
      white-space: nowrap;
  }
+.overlay-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+}
+
+.overlay-section .card { /* Apply styles to the card inside overlay-section */
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    width: 650px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+.delete-section .card { /* Apply styles to the card inside overlay-section */
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    width: 400px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.overlay-section.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out, visibility 0s linear 0s;
+}

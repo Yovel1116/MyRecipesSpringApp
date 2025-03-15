@@ -26,19 +26,19 @@ document.getElementById("recipeForm").addEventListener("submit", function(event)
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newRecipe)
     })
-    .then(response => {
-        if (!response.ok) return response.json().then(err => { throw new Error(err.message || "Failed to add recipe"); });
-        return response.json();
-    })
-    .then(() => {
-        fetchRecipes();
-        document.getElementById("recipeForm").reset();
-        alert("Recipe added successfully!");
-    })
-    .catch(error => {
-        console.error("❌ Error adding recipe:", error);
-        alert("Error adding recipe. Check the console for details.");
-    });
+        .then(response => {
+            if (!response.ok) return response.json().then(err => { throw new Error(err.message || "Failed to add recipe"); });
+            return response.json();
+        })
+        .then(() => {
+            fetchRecipes();
+            document.getElementById("recipeForm").reset();
+            alert("Recipe added successfully!");
+        })
+        .catch(error => {
+            console.error("❌ Error adding recipe:", error);
+            alert("Error adding recipe. Check the console for details.");
+        });
 });
 document.getElementById("updateForm").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -64,16 +64,16 @@ document.getElementById("updateForm").addEventListener("submit", function(event)
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedRecipe)
     })
-    .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        return response.json();
-    })
-    .then(() => {
-        fetchRecipes();
-        document.getElementById("updateForm").reset();
-        alert("Recipe updated successfully!");
-    })
-    .catch(error => console.error("Error updating recipe:", error));
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(() => {
+            fetchRecipes();
+            document.getElementById("updateForm").reset();
+            alert("Recipe updated successfully!");
+        })
+        .catch(error => console.error("Error updating recipe:", error));
 });
 document.getElementById("deleteForm").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -87,12 +87,12 @@ document.getElementById("deleteForm").addEventListener("submit", function(event)
     console.log("🚀 Delete Data:", JSON.stringify(recipeId));
 
     fetch(`${API_URL}/${recipeId}`, { method: "DELETE" })
-    .then(() => {
-        fetchRecipes();
-        document.getElementById("deleteForm").reset();
-        alert("Recipe deleted successfully!");
-    })
-    .catch(error => console.error("Error deleting recipe:", error));
+        .then(() => {
+            fetchRecipes();
+            document.getElementById("deleteForm").reset();
+            alert("Recipe deleted successfully!");
+        })
+        .catch(error => console.error("Error deleting recipe:", error));
 });
 const crudButtons = document.querySelectorAll('#offcanvasNavbar button[onclick^="showSection"]');
 crudButtons.forEach(button => {
@@ -138,25 +138,87 @@ function displayRecipes() {
         let id = recipe.id || (recipe._links?.self?.href.split("/").pop() ?? "No ID");
 
         const li = document.createElement("li");
-        li.classList.add("list-group-item", "text-start", "recipe-item");
-        li.setAttribute("data-bs-toggle", "tooltip");
-        li.setAttribute("data-bs-html", "true");
-        li.setAttribute("title",
-            `<strong>Ingredients:</strong> ${recipe.ingredients}<br>
-             <strong>Instructions:</strong> ${recipe.instructions}`
-        );
+        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "recipe-item");
 
-        li.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine}`;
+        const recipeText = document.createElement('span');
+        recipeText.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine} `;
+        recipeText.setAttribute("data-bs-toggle", "tooltip");
+        recipeText.setAttribute("data-bs-html", "true");
+        recipeText.setAttribute("title",
+            `<strong>Ingredients:</strong> ${recipe.ingredients}<br>
+     <strong>Instructions:</strong> ${recipe.instructions}`
+        );
+        li.appendChild(recipeText);
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.flex='none';
+
+        const updateButton = document.createElement('button');
+        updateButton.classList.add('btn', 'btn-sm', 'btn-outline-primary', 'update-recipe-btn');
+        updateButton.style.background = 'transparent';
+        updateButton.style.border = 'none';
+        updateButton.style.padding = '0';
+        updateButton.style.cursor = 'pointer';
+        updateButton.style.padding = '3px';
+        updateButton.innerHTML = '✏️';
+        updateButton.setAttribute('data-recipe-id', id);
+        updateButton.addEventListener('click', () => {
+            showSection('updateRecipe');
+            populateUpdateForm(recipe);
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn', 'btn-sm', 'btn-outline-danger', 'delete-recipe-btn');
+        deleteButton.style.background = 'transparent';
+        deleteButton.style.border = 'none';
+        deleteButton.style.padding = '0';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.style.padding = '3px';
+        deleteButton.innerHTML = '🗑️'; // Use the trash can directly
+        deleteButton.setAttribute('data-recipe-id', id);
+        deleteButton.addEventListener('click', () => {
+            showSection('deleteRecipe');
+            document.getElementById('deleteId').value = id;
+        });
+
+        buttonContainer.appendChild(updateButton);
+        buttonContainer.appendChild(deleteButton);
+        li.appendChild(buttonContainer);
+
         recipeList.appendChild(li);
     });
 
-    // Update pagination controls
     updatePaginationControls();
 
-    // Initialize Bootstrap tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 }
+
+function populateUpdateForm(recipe) {
+    document.getElementById("updateId").value = recipe.id || (recipe._links?.self?.href.split("/").pop() ?? "");
+    document.getElementById("updateName").value = recipe.name;
+    document.getElementById("updatePrepTime").value = recipe.prep_time;
+    document.getElementById("updateIngredients").value = recipe.ingredients;
+    document.getElementById("updateInstructions").value = recipe.instructions;
+    document.getElementById("updateCuisine").value = recipe.cuisine;
+}
+
+function deleteRecipe(recipeId) {
+    if (!recipeId) {
+        alert("Invalid Recipe ID.");
+        return;
+    }
+
+    console.log(" Delete Data:", JSON.stringify(recipeId));
+
+    fetch(`${API_URL}/${recipeId}`, { method: "DELETE" })
+        .then(() => {
+            fetchRecipes();
+            alert("Recipe deleted successfully!");
+        })
+        .catch(error => console.error("Error deleting recipe:", error));
+}
+
 function updatePaginationControls() {
     document.getElementById("pageInfo").textContent = `Page ${currentPage} of ${Math.ceil(totalRecipes / recipesPerPage)}`;
     document.getElementById("prevPage").disabled = currentPage === 1;
@@ -167,14 +229,45 @@ function changePage(direction) {
     currentPage += direction;
     displayRecipes();
 }
-
 function showSection(sectionId) {
-    document.getElementById("addRecipe").classList.add("d-none");
-    document.getElementById("updateRecipe").classList.add("d-none");
-    document.getElementById("deleteRecipe").classList.add("d-none");
-    document.getElementById(sectionId).classList.remove("d-none");
+    const section = document.getElementById(sectionId);
+
+    if (section && section.classList.contains('overlay-section')) {
+        if (!section.classList.contains('show')) {
+            section.classList.remove('d-none');
+            setTimeout(() => {
+                section.classList.add('show');
+            }, 50);
+        }
+    } else {
+        // Hide other overlay sections if they are visible
+        const overlaySections = document.querySelectorAll('.overlay-section');
+        overlaySections.forEach(overlaySection => {
+            if (overlaySection.classList.contains('show')) {
+                overlaySection.classList.remove('show');
+                overlaySection.addEventListener('transitionend', () => {
+                    overlaySection.classList.add('d-none');
+                }, { once: true });
+            }
+        });
+        // ... your existing code to handle other sections ...
+        if (section) {
+            document.getElementById("addRecipe").classList.add("d-none");
+            section.classList.remove("d-none");
+        }
+    }
 }
 
+function hideOverlaySection(sectionId) {
+    const section = document.getElementById(sectionId);
+
+    if (section && section.classList.contains('show')) {
+        section.classList.remove('show');
+        section.addEventListener('transitionend', () => {
+            section.classList.add('d-none');
+        }, { once: true });
+    }
+}
 function filterRecipes() {
     let input = document.getElementById("searchRecipe").value.toLowerCase().trim();
     const recipeList = document.getElementById("recipeList");
@@ -344,37 +437,62 @@ function searchRecipeByName(recipeName) {
 
 function showSectionAbout(section) {
     const aboutSection = document.getElementById('aboutSection');
+    const contactSection = document.getElementById('contactSection');
+
     if (section === 'about') {
-        // Only proceed if the section is not already shown
         if (!aboutSection.classList.contains('show')) {
             aboutSection.classList.remove('d-none');
-            // Use setTimeout to ensure the 'show' class is added after the 'd-none' class is removed
             setTimeout(() => {
                 aboutSection.classList.add('show');
             }, 50);
         }
-    } else if (section === 'home') {
-        // Only proceed if the section is currently shown
-        if (aboutSection.classList.contains('show')) {
+        if(contactSection.classList.contains('show')){
+            contactSection.classList.remove('show');
+            contactSection.addEventListener('transitionend', () => {
+                contactSection.classList.add('d-none');
+            }, { once: true });
+        }
+    } else if (section === 'contactus') {
+        if (!contactSection.classList.contains('show')) {
+            contactSection.classList.remove('d-none');
+            setTimeout(() => {
+                contactSection.classList.add('show');
+            }, 50);
+        }
+        if(aboutSection.classList.contains('show')){
             aboutSection.classList.remove('show');
-            // Use a transitionend event listener to add 'd-none' after the transition
             aboutSection.addEventListener('transitionend', () => {
                 aboutSection.classList.add('d-none');
+            }, { once: true });
+        }
+    } else if (section === 'home') {
+        if (aboutSection.classList.contains('show')) {
+            aboutSection.classList.remove('show');
+            aboutSection.addEventListener('transitionend', () => {
+                aboutSection.classList.add('d-none');
+            }, { once: true });
+        }
+        if(contactSection.classList.contains('show')){
+            contactSection.classList.remove('show');
+            contactSection.addEventListener('transitionend', () => {
+                contactSection.classList.add('d-none');
             }, { once: true });
         }
     } else {
-        // For other sections, hide the about section if it's visible
         if (aboutSection.classList.contains('show')) {
             aboutSection.classList.remove('show');
-            // Use a transitionend event listener to add 'd-none' after the transition
             aboutSection.addEventListener('transitionend', () => {
                 aboutSection.classList.add('d-none');
             }, { once: true });
         }
-        // ... your existing code to handle other sections ...
+        if(contactSection.classList.contains('show')){
+            contactSection.classList.remove('show');
+            contactSection.addEventListener('transitionend', () => {
+                contactSection.classList.add('d-none');
+            }, { once: true });
+        }
     }
 }
-
 function hideAboutSection() {
     const aboutSection = document.getElementById('aboutSection');
 
@@ -401,7 +519,13 @@ function closeCrudSection() {
         }
     }
 }
+function showContactSection() {
+    document.getElementById("contactSection").classList.remove("d-none");
+}
 
+function hideContactSection() {
+    document.getElementById("contactSection").classList.add("d-none");
+}
 // Fetch recipes on page load
 fetchRecipes();
 

@@ -6,11 +6,12 @@
     <title>Recipes Management</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4" style="z-index: 1000;width: 100%;position: fixed;">
     <div class="container-fluid">
         <a class="navbar-brand" href="#" onclick="showSection('home')">Recipes Management</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -23,38 +24,50 @@
             </div>
 
             <div class="offcanvas-body">
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 align-items-center  d-lg-flex">
-
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 align-items-center  d-lg-flex" style="color: white">
                     <li class="nav-item">
-                        <button type="button" class="btn me-2 shadow-sm glow-on-hover" data-bs-toggle="modal" data-bs-target="#aiModal" style="color: white">
-                            ChefAI
-                        </button>
+                        <button type="button" class="btn me-2 shadow-sm glow-on-hover" data-bs-toggle="modal" data-bs-target="#aiModal" style="color: white; " >
+                            ChefAI</button>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="crudDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-bars"></i> Manage Recipes
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="crudDropdown">
-                            <li><a class="dropdown-item" href="#" onclick="showSection('addRecipe')">➕ Add</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="showSection('updateRecipe')">✏️ Update</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="showSection('deleteRecipe')">🗑️ Delete</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="showSectionAbout('about')">About</a>
-                    </li>
+                    <li><a class="dropdown-item" style="color: white; padding: 10px" href="#" onclick="showSection('addRecipe')">➕ Add Recipe</a></li>
+                    <li><a class="dropdown-item" style="color: white; padding: 10px" href="#" onclick="showSectionAbout('about')">About</a></li>
                 </ul>
             </div>
-            <div id="aboutSection" class="d-none">
-                <div class=" mt-4 about-container">
+            <div id="aboutSection" class="overlay-section d-none">
+                <div class="about-container">
                     <h2 class="text-center mb-4">About Recipes Management</h2>
-                    <p>Discover & Manage Your Favorite Recipes. Anytime, Anywhere!  </p>
-                    <p><i class="fas fa-user"></i> Developed by: Yovel Katz</p>
-                    <p><i class="fas fa-envelope"></i> Contact: yovel1116@gmail.com</p>
-                    <p><i class="fab fa-github"></i> For repository on GitHub: <a href="https://github.com/Yovel1116/MyRecipesSpringApp" target="_blank">MyRecipesSpringApp</a></p>
-                    <button onclick="hideAboutSection()" class="btn btn-primary">Close</button>
+                    <p>Discover & Manage Your Favorite Recipes. Anytime, Anywhere!</p>
+                    <p><i class="fas fa-user" aria-hidden="true"></i> Developed by: Yovel Katz</p>
+                    <p><i class="fab fa-github" aria-hidden="true"></i> For repository on GitHub: <a href="https://github.com/Yovel1116/MyRecipesSpringApp" target="_blank">MyRecipesSpringApp</a></p>
+                    <button onclick="hideAboutSection()" class="btn btn-primary" aria-label="Close About Section">Close</button>
                 </div>
             </div>
+
+            <div id="contactSection" class="overlay-section d-none">
+                <div class="about-container">
+                    <h2 class="text-center mb-4">Contact Us</h2>
+                    <p>Feel free to reach out with any questions or feedback!</p>
+                    <p><i class="fas fa-envelope" aria-hidden="true"></i> Email: <a href="mailto:yovel1116@gmail.com">yovel1116@gmail.com</a></p>
+                    <p>Or use the form below:</p>
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                    <button onclick="hideContactSection()" class="btn btn-primary" aria-label="Close Contact Section">Close</button>
+                </div>
+            </div>
+
             <div class="modal fade" id="aiModal" tabindex="-1" aria-labelledby="aiModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -73,85 +86,13 @@
                     </div>
                 </div>
             </div>
-            </div>
         </div>
+    </div>
     </div>
 </nav>
 
-
-
 <div class="container mt-4">
-    <div class="row d-flex flex-column flex-md-row" style="min-height: 100vh;">
-        <div class="col-12 col-md-6 h-100" style="margin-top: 60px">
-            <div id="addRecipe" class="card shadow mb-4 d-none">
-                <div class="card-header bg-success text-white">
-                    <h2 class="h5 mb-0">Add New Recipe</h2>
-                </div>
-                <div class="card-body">
-                    <form id="recipeForm">
-                        <div class="mb-3">
-                            <input type="text" id="recipeName" class="form-control" placeholder="Recipe Name" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="prepTime" class="form-control" placeholder="Preparation Time (e.g., 30 minutes)" required>
-                        </div>
-                        <div class="mb-3">
-                            <textarea id="ingredients" class="form-control" placeholder="Ingredients " ></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <textarea id="instructions" class="form-control" placeholder="Instructions" ></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="cuisine" class="form-control" placeholder="Cuisine Type (e.g., Italian, Thai)" >
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Add Recipe</button>
-                    </form>
-                </div>
-            </div>
-            <div id="updateRecipe" class="card shadow mb-4 d-none">
-                <div class="card-header bg-warning text-dark">
-                    <h2 class="h5 mb-0">Update Recipe</h2>
-                </div>
-                <div class="card-body">
-                    <form id="updateForm">
-                        <div class="mb-3">
-                            <input type="number" id="updateId" class="form-control" placeholder="Recipe ID" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="updateName" class="form-control" placeholder="Recipe Name " >
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="updatePrepTime" class="form-control" placeholder="Preparation Time" >
-                        </div>
-                        <div class="mb-3">
-                            <textarea id="updateIngredients" class="form-control" placeholder="Ingredients"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <textarea id="updateInstructions" class="form-control" placeholder="Instructions"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="updateCuisine" class="form-control" placeholder="Cuisine Type">
-                        </div>
-                        <button type="submit" class="btn btn-warning w-100">Update Recipe</button>
-                    </form>
-                </div>
-            </div>
-
-            <div id="deleteRecipe" class="card shadow d-none">
-                <div class="card-header bg-danger text-white">
-                    <h2 class="h5 mb-0">Delete Recipe</h2>
-                </div>
-                <div class="card-body">
-                    <form id="deleteForm">
-                        <div class="mb-3">
-                            <input type="number" id="deleteId" class="form-control" placeholder="Recipe ID" required>
-                        </div>
-                        <button type="submit" class="btn btn-danger w-100">Delete Recipe</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
+    <div class="row d-flex flex-column flex-md-row" style="min-height: 100vh; place-content: center">
         <div class="col-12 col-md-6 h-100 d-flex flex-column">
 
             <div class="d-flex justify-content-between align-items-center mt-3">
@@ -174,9 +115,90 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div id="recipeListSection"> <ul id="recipeList" class="list-group"></ul> </div>
+                    <div id="recipeListSection">
+                        <ul id="recipeList" class="list-group"></ul>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="addRecipe" class="overlay-section d-none">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Add New Recipe</h2>
+            <button type="button" class="btn-close text-reset" style="background-color: white;" onclick="hideOverlaySection('addRecipe')" aria-label="Close"></button>
+        </div>
+        <div class="card-body">
+            <form id="recipeForm">
+                <div class="mb-3">
+                    <input type="text" id="recipeName" class="form-control" placeholder="Recipe Name" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="prepTime" class="form-control" placeholder="Preparation Time (e.g., 30 minutes)" required>
+                </div>
+                <div class="mb-3">
+                    <textarea id="ingredients" class="form-control" placeholder="Ingredients "></textarea>
+                </div>
+                <div class="mb-3">
+                    <textarea id="instructions" class="form-control" placeholder="Instructions"></textarea>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="cuisine" class="form-control" placeholder="Cuisine Type (e.g., Italian, Thai)"></input>
+                </div>
+                <button type="submit" class="btn btn-success w-100" onclick="hideOverlaySection('addRecipe')">Add Recipe</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div id="updateRecipe" class="overlay-section d-none">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Update Recipe</h2>
+            <button type="button" class="btn-close text-reset" style="background-color: white;" onclick="hideOverlaySection('updateRecipe')" aria-label="Close"></button>
+        </div>
+        <div class="card-body">
+            <form id="updateForm">
+                <div class="mb-3">
+                    <input type="number" id="updateId" class="form-control" placeholder="Recipe ID" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="updateName" class="form-control" placeholder="Recipe Name ">
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="updatePrepTime" class="form-control" placeholder="Preparation Time">
+                </div>
+                <div class="mb-3">
+                    <textarea id="updateIngredients" class="form-control" placeholder="Ingredients"></textarea>
+                </div>
+                <div class="mb-3">
+                    <textarea id="updateInstructions" class="form-control" placeholder="Instructions"></textarea>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="updateCuisine" class="form-control" placeholder="Cuisine Type">
+                </div>
+                <button type="submit" class="btn btn-warning w-100" onclick="hideOverlaySection('updateRecipe')">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="deleteRecipe" class="overlay-section delete-section d-none">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Delete Recipe</h2>
+            <button type="button" class="btn-close text-reset" style="background-color: white;" onclick="hideOverlaySection('deleteRecipe')" aria-label="Close"></button>
+        </div>
+        <div class="card-body">
+            <form id="deleteForm">
+                <div class="mb-3">
+                    <input type="number" id="deleteId" class="form-control" placeholder="Recipe ID" required>
+                </div>
+                <button type="submit" class="btn btn-danger w-100" onclick="hideOverlaySection('deleteRecipe')">Delete</button>
+            </form>
         </div>
     </div>
 </div>
