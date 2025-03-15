@@ -308,7 +308,8 @@ function filterRecipes() {
         li.appendChild(recipeText);
 
         const buttonContainer = document.createElement('div');
-
+        buttonContainer.style.flex='none';
+        
         const updateButton = document.createElement('button');
         updateButton.classList.add('btn', 'btn-sm', 'btn-outline-primary', 'update-recipe-btn');
         updateButton.style.background = 'transparent';
