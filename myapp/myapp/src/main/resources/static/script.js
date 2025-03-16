@@ -295,17 +295,18 @@ function filterRecipes() {
         let id = recipe.id || (recipe._links?.self?.href.split("/").pop() ?? "No ID");
 
         const li = document.createElement("li");
-        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "recipe-item"); // Added d-flex...
-        li.setAttribute("data-bs-toggle", "tooltip");
-        li.setAttribute("data-bs-html", "true");
-        li.setAttribute("title",
-            `<strong>Ingredients:</strong> ${recipe.ingredients}<br>
-             <strong>Instructions:</strong> ${recipe.instructions}`
-        );
+        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "recipe-item");
 
         const recipeText = document.createElement('span');
         recipeText.innerHTML = `<strong>${id}:</strong> ${recipe.name} - ${recipe.prep_time} min - ${recipe.cuisine} `;
+        recipeText.setAttribute("data-bs-toggle", "tooltip");
+        recipeText.setAttribute("data-bs-html", "true");
+        recipeText.setAttribute("title",
+            `<strong>Ingredients:</strong> ${recipe.ingredients}<br>
+     <strong>Instructions:</strong> ${recipe.instructions}`
+        );
         li.appendChild(recipeText);
+
 
         const buttonContainer = document.createElement('div');
         buttonContainer.style.flex='none';
